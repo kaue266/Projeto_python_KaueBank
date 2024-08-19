@@ -1,7 +1,8 @@
-import requests, json, os, datetime
-from tkinter import *  #importando tkinter para janela
+import requests, json, os, datetime, secrets
+from dotenv import load_dotenv
 from random import randrange
 from datetime import *
+
 import firebase_admin
 from firebase_admin import credentials, db, firestore
 sim = [
@@ -61,15 +62,21 @@ sim = [
     "Natürlich, Chef", "Auf jeden Fall, Chef", "Sicherlich, Chef", "Aber sicher doch", 
     "Natürlich"
 ]
-link = firebase_admin.credentials.Certificate('key/projeto-python-e5003-firebase-adminsdk-mvrk7-01438a2fec.json')
-id = requests.get('https://api.ipify.org/').text
+
+load_dotenv('.venv/certificate.env')
+
+# Obtém o caminho do certificado e a URL do banco de dados
+cert_path = os.getenv('FIREBASE_CERTIFICATE_PATH')
+database_url = os.getenv('DATABASE_URL')
+LinkIP = os.getenv('Link_URL')
+
+link = firebase_admin.credentials.Certificate(cert_path)
+id = requests.get(LinkIP).text
 default_app = firebase_admin.initialize_app(link, {
-	'databaseURL': "https://projeto-python-e5003-default-rtdb.firebaseio.com"
-	})
+    'databaseURL': database_url
+})
 ref = db.reference("/")
-
 data = ref.get()
-
 saldo = randrange(1200)
 
 def limpar():
